@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background: #000000;
+    color: #FFFFFF;
+    min-height: 100vh;
+}
+
+.bg-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #1a1a2e 0%, #0d0d1a 50%, #000000 100%);
+    z-index: -2;
+}
+
+.blur-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(60px);
+    background: rgba(255, 255, 255, 0.02);
+    z-index: -1;
+}
+
+.btn-primary {
+    background: #E53935;
+    border: none;
+    border-radius: 60px;
+    padding: 12px 24px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: #C62828;
+    transform: scale(1.02);
+}
+
+input, button {
+    font-family: inherit;
+}
