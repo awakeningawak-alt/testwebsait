@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>DevStoreEmail | Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container {
+            max-width: 420px;
+            margin: 80px auto;
+            background: rgba(30,30,35,0.6);
+            backdrop-filter: blur(30px);
+            border-radius: 48px;
+            padding: 40px 32px;
+            border: 0.5px solid rgba(255,255,255,0.1);
+        }
+        .auth-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            color: #8E8E93;
+            font-weight: 500;
+        }
+        .auth-tab.active {
+            color: #E53935;
+            border-bottom: 2px solid #E53935;
+        }
+        .auth-form {
+            display: none;
+        }
+        .auth-form.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group input {
+            width: 100%;
+            background: rgba(255,255,255,0.08);
+            border: 0.5px solid rgba(255,255,255,0.15);
+            border-radius: 60px;
+            padding: 14px 20px;
+            color: white;
+            font-size: 15px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #E53935;
+        }
+        .btn-primary {
+            width: 100%;
+            background: #E53935;
+            border: none;
+            border-radius: 60px;
+            padding: 14px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .error-msg {
+            color: #E53935;
+            font-size: 12px;
+            margin-top: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="blur-overlay"></div>
+
+    <div class="auth-container">
+        <div class="logo" style="text-align:center; margin-bottom:24px;">
+            <span style="font-size:48px;">📧</span>
+            <h2 style="margin-top:8px;">DevStoreEmail</h2>
+            <p style="color:#8E8E93; font-size:13px;">Premium Email .com Store</p>
+        </div>
+
+        <div class="auth-tabs">
+            <div class="auth-tab active" data-tab="login">Login</div>
+            <div class="auth-tab" data-tab="register">Daftar</div>
+        </div>
+
+        <div id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <input type="text" id="loginUsername" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input type="password" id="loginPassword" placeholder="Password">
+            </div>
+            <button class="btn-primary" onclick="handleLogin()">Login</button>
+            <div id="loginError" class="error-msg"></div>
+        </div>
+
+        <div id="registerForm" class="auth-form">
+            <div class="form-group">
+                <input type="text" id="regUsername" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input type="password" id="regPassword" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <input type="email" id="regEmail" placeholder="Email">
+            </div>
+            <button class="btn-primary" onclick="handleRegister()">Daftar</button>
+            <div id="registerError" class="error-msg"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const formId = tab.dataset.tab === 'login' ? 'loginForm' : 'registerForm';
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                document.getElementById(formId).classList.add('active');
+            });
+        });
+
+        function handleRegister() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const email = document.getElementById('regEmail').value.trim();
+            const errorDiv = document.getElementById('registerError');
+
+            if (!username || !password || !email) {
+                errorDiv.innerText = '❌ Semua field harus diisi!';
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('devstore_users') || '[]');
+            if (users.find(u => u.username === username)) {
+                errorDiv.innerText = '❌ Username sudah terdaftar!';
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                username,
+                password,
+                email,
+                balance: 0,
+                createdAt: new Date().toISOString()
+            };
+            users.push(newUser);
+            localStorage.setItem('devstore_users', JSON.stringify(users));
+            errorDiv.innerText = '✅ Pendaftaran berhasil! Silakan login.';
+            errorDiv.style.color = '#4CAF50';
+            setTimeout(() => {
+                document.querySelector('.auth-tab[data-tab="login"]').click();
+            }, 1500);
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            let users = JSON.parse(localStorage.getItem('devstore_users') || '[]');
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (!user) {
+                errorDiv.innerText = '❌ Username atau password salah!';
+                return;
+            }
+
+            localStorage.setItem('devstore_current_user', JSON.stringify(user));
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+  </html>
